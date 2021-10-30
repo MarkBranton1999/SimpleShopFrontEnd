@@ -31,7 +31,44 @@ function App(props) {
 }
 
 function CreateAccount(){
-  return <h2>Create An Account</h2>
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const history = useHistory();
+  function create_account(e){
+    e.preventDefault();
+    axios.post('http://localhost:3000/create_account',{
+      username: username,
+      password: password
+    }).then(res => {
+      console.log(res);
+    })
+  }
+  return (
+    <div className="App">
+      <div className="App-header">
+        <div className="Custom-header">
+          <h1 style={{fontSize: "200%"}}>Create An Account</h1>
+        </div>
+        <Form onSubmit={create_account}>
+          <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Label></Form.Label>
+            <Form.Control type="email" placeholder="Enter email" onChange={(e) => setUsername(e.target.value)}/>
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="formBasicPassword">
+            <Form.Control type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)}/>
+          </Form.Group>
+          <Row className="justify-content-md-center">
+            <Col md="auto">
+              <Button variant="primary" type="submit">
+                Create Account
+              </Button>
+            </Col>
+          </Row>
+        </Form>
+      </div>
+    </div>
+  );
 }
 
 function LoginPage(){
