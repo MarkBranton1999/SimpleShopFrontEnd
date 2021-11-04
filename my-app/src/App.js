@@ -11,8 +11,6 @@ import { Grid, Form, FormControl, Navbar, Glyphicon,
   Nav, NavItem, Well, Row, Col, Button, Container} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Cookies from 'js-cookie';
-import { USD } from '@dinero.js/currencies';
-import { dinero, add } from 'dinero.js';
 
 function App() {
   return (
@@ -157,6 +155,7 @@ function ShopPage(){
         newItemsForCheckout[i].quantity = (Number)(itemsForCheckout[i].quantity) + 1;
         setItemsForCheckout(newItemsForCheckout);
         setTotalPrice(((Number)(totalPrice) + (Number)(item.price)).toFixed(2));
+        console.log(typeof totalPrice);
         return;
       }
     }
@@ -167,8 +166,21 @@ function ShopPage(){
     //newItemsForCheckout.push(itemTmp);
     setItemsForCheckout(itemsForCheckout => [...itemsForCheckout, itemTmp]);
     setTotalPrice(((Number)(totalPrice) + (Number)(item.price)).toFixed(2));
+    console.log(typeof totalPrice);
     return;
 
+  }
+
+  function checkout(e){
+    e.preventDefault();
+    axios.post('http://localhost:3000/place_order',{
+      username: Cookies.get('username'),
+      token: Cookies.get('token'),
+      items: itemsForCheckout,
+      total: totalPrice
+    }).then(res => {
+      console.log(res);
+    });
   }
   useEffect(() => {
     axios.get('http://localhost:3000/inventory').then(res => {
@@ -262,7 +274,7 @@ function ShopPage(){
                       </Container>
                       <br />
                       <h3>Total: ${totalPrice}</h3>
-                      <Button variant="success">
+                      <Button variant="success" onClick={(e) => checkout(e)}>
                         Checkout
                       </Button>
                     </Col>
